@@ -52,7 +52,7 @@ workflowSchedule:
 # wfuzz, nmap, scrapy, libwww-perl, go-http-client) et n'est jamais une
 # chaîne vide. Vérifié par lecture du fichier, aucun doute à signaler.
 sites:
-  - name: Site Alcinae
+  - name: Alcinae
     slug: site-alcinae
     url: https://alcinae.com/
     headers:
@@ -61,7 +61,7 @@ sites:
       - 200
     __dangerous__body_down_if_text_missing: "Alcinae"
 
-  - name: Site La Ferme de Fontbonne
+  - name: Ferme de Fontbonne
     slug: site-la-ferme-de-fontbonne
     url: https://fermedefontbonne.fr/
     headers:
@@ -86,7 +86,21 @@ sites:
     expectedStatusCodes:
       - 200
 
-  - name: Boutique en ligne
+  # Suffixes (UI)/(API) : seul France Appro a une sonde API distincte
+  # aujourd'hui, donc seul lui a besoin d'être désambiguïsé. Décision du
+  # 2026-09-16, après vérification des vhosts nginx (infra/apps/nginx/
+  # sites/*.conf) : `/api/actuator` (et tout `/api/actuator/*`) renvoie
+  # 404 en dur sur les quatre backends (challenge, pingscore, forms,
+  # franceappro), décision de sécurité déjà en place, pas un oubli. Il
+  # n'existe donc pas de bilan de santé générique à sonder. France Appro
+  # a une sonde API uniquement parce qu'une route métier publique, en
+  # lecture seule et sans authentification a été identifiée (le catalogue
+  # produit, masquée par SECRET_FRANCEAPPRO_API_URL) : rien d'équivalent
+  # n'a été vérifié pour Challenge, PingScore ou Forms, donc pas de sonde
+  # API ajoutée pour eux plutôt que d'en deviner une. Challenge et
+  # PingScore n'ont donc pas de suffixe : une seule sonde chacun, pas
+  # d'ambiguïté à lever.
+  - name: France Appro (UI)
     slug: boutique-en-ligne
     url: https://franceappro.alcinae.com/
     headers:
@@ -98,7 +112,7 @@ sites:
   # URL masquée par secret : voir le compte rendu de l'agent pour la valeur
   # exacte proposée (route publique de lecture du catalogue franceappro,
   # sans authentification, sans effet de bord). Jamais écrite en clair ici.
-  - name: Boutique en ligne (API)
+  - name: France Appro (API)
     slug: boutique-en-ligne-api
     url: $SECRET_FRANCEAPPRO_API_URL
     headers:
@@ -128,7 +142,7 @@ sites:
   # media.alcinae.com. Voir le compte rendu de l'agent, aucune valeur stable
   # n'a pu être identifiée par analyse statique du dépôt (le contenu du
   # bucket est une donnée de production dynamique, pas un fichier versionné).
-  - name: Médias
+  - name: CDN
     slug: medias
     url: $SECRET_MEDIA_URL
     headers:
@@ -150,18 +164,17 @@ status-website:
   # alcinae-status-theme.css (assets/) : mécanisme officiel vérifié dans
   # upptime/status-page src/routes/_layout.svelte le 2026-09-16
   # (status-website.links ajoute un <link> après les feuilles de thème,
-  # donc nos règles gagnent en cascade). PAS de `theme:` explicite ici :
-  # ça désactiverait le basculement automatique prefers-color-scheme
-  # d'Upptime (constaté en régression le 2026-09-16, corrigé en laissant
-  # Upptime charger light.css/dark.css selon le système, et en fournissant
-  # nous-mêmes une palette claire ET sombre dans alcinae-status-theme.css
-  # via @media (prefers-color-scheme: dark)).
+  # donc nos règles gagnent en cascade). `theme: light` force le thème
+  # clair quel que soit le système du visiteur : pas de mode sombre sur
+  # cette page (décision utilisateur du 2026-09-16, non pertinent ici ;
+  # une palette sombre avait été ajoutée puis retirée le même jour).
   # URL ABSOLUE obligatoire (pas un chemin relatif) : constaté en échec de
   # Setup CI le 2026-09-16, le crawler d'export statique de Sapper suit tout
   # <link> à chemin relatif comme une page interne à exporter, entre en
   # collision avec la copie du fichier réel (EISDIR) une fois qu'il a créé
   # un dossier du même nom suite au 404 obtenu en local. L'exemple officiel
   # de la doc Upptime utilise déjà une URL absolue, pour cette raison.
+  theme: light
   links:
     - rel: stylesheet
       href: https://status.alcinae.com/alcinae-status-theme.css
@@ -176,14 +189,22 @@ status-website:
   logoUrl: https://alcinae.com/assets/alcinae.png
   favicon: https://alcinae.com/assets/alcinae.png
   navbarGitHub: false
+  # `name` sert à la fois de titre d'onglet et de texte de nav à côté du
+  # logo (Nav.svelte). Gardé complet ("Alcinae : état des services") pour
+  # l'onglet du navigateur (utile si plusieurs onglets Alcinae sont
+  # ouverts), mais masqué dans la nav (hideNavTitle) pour ne pas répéter
+  # "état des services" juste au-dessus du <h1> introTitle : le logo seul
+  # suffit à identifier la marque dans la nav (revue de contenu du
+  # 2026-09-16).
+  hideNavTitle: true
 
   # introTitle ajouté le 2026-09-16 : la page d'accueil n'avait aucun <h1>
   # visible (seul un <h2> "État en direct" existait), défaut de hiérarchie
   # de titres constaté en revue UI/UX.
   introTitle: "État des services Alcinae"
   introMessage: >-
-    Suivi en temps réel de la disponibilité des services Alcinae. Retour au
-    site principal : [alcinae.com](https://alcinae.com).
+    Suivi en temps réel de la disponibilité de nos services. Retour au site
+    principal : [alcinae.com](https://alcinae.com).
 
   # Sur la page de détail d'un service (route history/[number]), le titre
   # est un <a href="URL réelle du service"> câblé en dur dans le composant
