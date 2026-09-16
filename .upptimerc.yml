@@ -25,11 +25,13 @@ secrets:
   - SECRET_FRANCEAPPRO_API_URL
   - SECRET_MEDIA_URL
 
-# Fréquence des sondes : 15 minutes (décision retenue dans SPEC.md, révisée
-# le 2026-09-16). Le minimum autorisé par GitHub Actions est 5 minutes
-# (valeur par défaut d'Upptime), mais un délai de détection plus long a été
-# jugé acceptable au vu du SLA (annexe 1 section 4, non indexé sur cette
-# fréquence, voir MONITORING-EXTERNE.md section 11).
+# Ce `schedule` n'est plus le déclencheur réel depuis le 2026-09-16 : il ne
+# se déclenchait jamais en pratique (limite connue d'Upptime, voir
+# MONITORING-EXTERNE.md section 4). La fréquence réelle de 5 minutes vient
+# d'un appel externe cron-job.org vers `repository_dispatch` (type `uptime`,
+# voir uptime.yml). Ce `schedule` reste en place comme filet de secours
+# partiel, sans effet indésirable s'il se déclenche en plus (concurrency
+# sans cancel-in-progress dans uptime.yml).
 workflowSchedule:
   uptime: "*/15 * * * *"
 
@@ -134,12 +136,57 @@ sites:
 status-website:
   cname: status.alcinae.com
   name: "Alcinae : état des services"
-  navbar:
-    - title: Alcinae
-      href: https://alcinae.com
+
+  # Thème calé sur le site principal (infra/apps/alcinae/assets/style.css :
+  # --navy #14145C, --rust #B84A25). `theme: light` fournit les variables par
+  # défaut, alcinae-status-theme.css (assets/) les surcharge : mécanisme
+  # officiel vérifié dans upptime/status-page src/routes/_layout.svelte le
+  # 2026-09-16 (status-website.theme charge themes/<nom>.css, status-website
+  # .links ajoute des <link> après, donc nos règles gagnent en cascade).
+  theme: light
+  links:
+    - rel: stylesheet
+      href: /alcinae-status-theme.css
+
+  # Logo repris tel quel du site principal, pas de duplication d'asset.
+  logoUrl: https://alcinae.com/assets/alcinae.png
+  logoHref: https://alcinae.com
+  favicon: https://alcinae.com/assets/alcinae.png
+  navbarGitHub: false
+
   introMessage: >-
     Suivi en temps réel de la disponibilité des services Alcinae. Retour au
     site principal : [alcinae.com](https://alcinae.com).
+
+  # Sur la page de détail d'un service (route history/[number]), le titre
+  # est un <a href="URL réelle du service"> câblé en dur dans le composant
+  # Summary.svelte du template upptime/status-page (vérifié le 2026-09-16,
+  # aucune option de config ne le désactive). On ne veut pas que la page de
+  # statut fasse sortir un visiteur vers un module interne. Un
+  # MutationObserver est nécessaire : cet <a> n'existe pas au chargement, il
+  # n'apparaît qu'après le fetch asynchrone de history/summary.json fait par
+  # Summary.svelte. Retirer `href` suffit à rendre l'élément non navigable,
+  # y compris au clavier (un <a> sans `href` n'est plus focusable).
+  js: |
+    (function () {
+      function neutralize(a) {
+        a.removeAttribute("href");
+        a.removeAttribute("target");
+        a.style.cursor = "default";
+      }
+      function scan() {
+        document
+          .querySelectorAll("main h1 a.no-underline[href]")
+          .forEach(neutralize);
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        new MutationObserver(scan).observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+        scan();
+      });
+    })();
 
 # Traduction française complète de l'interface Upptime (README et page de
 # statut). Liste exhaustive des 57 clés documentées dans
