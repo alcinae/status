@@ -1,23 +1,33 @@
 /*
  * Thème de status.alcinae.com, calé sur infra/apps/alcinae/assets/style.css
- * (--navy #14145C, --rust #B84A25). Chargé après themes/light.css (voir
- * status-website.theme et status-website.links dans .upptimerc.yml) : les
- * variables ci-dessous surchargent celles du thème par défaut d'Upptime,
- * même quand ce dernier utilise !important sur une déclaration qui LIT la
- * variable (ex. .tag.up { background: var(--tag-up-background-color)
- * !important }) puisque c'est la valeur de la variable qui change, pas la
- * règle. Liste exhaustive des variables : upptime/status-page
- * static/themes/light.css, lue le 2026-09-16.
+ * (--navy #14145C, --rust #B84A25). Chargé après themes/light.css et
+ * themes/dark.css (voir status-website.links dans .upptimerc.yml, plus de
+ * status-website.theme depuis la révision UI/UX du 2026-09-16 : forcer
+ * `theme: light` désactivait le basculement automatique
+ * prefers-color-scheme d'Upptime, régression corrigée ici). Les variables
+ * ci-dessous surchargent celles du thème par défaut, même quand ce dernier
+ * utilise !important sur une déclaration qui LIT la variable (ex. .tag.up
+ * { background: var(--tag-up-background-color) !important }) puisque
+ * c'est la valeur de la variable qui change, pas la règle. Liste
+ * exhaustive des variables : upptime/status-page static/themes/light.css,
+ * lue le 2026-09-16.
+ *
+ * Palette sombre : le site principal alcinae.com n'a pas encore de thème
+ * sombre (à signaler si un jour on le lui ajoute, cette palette n'est pas
+ * reprise de là, elle est dérivée ici pour ce projet uniquement).
  */
 
 :root {
   --body-background-color: #ffffff;
   --body-text-color: #1f2937;
+  --body-muted-color: #6b7280;
   --card-background-color: #f8f9fa;
   --card-border-color: #e5e7eb;
   --nav-background-color: #ffffff;
   --nav-border-bottom-color: #e5e7eb;
   --nav-current-border-bottom-color: #b84a25;
+  --brand-color: #14145c;
+  --accent-color: #b84a25;
 
   /* États des sondes : couleurs sémantiques classiques, volontairement
      distinctes du rust de la marque pour ne jamais laisser croire qu'un
@@ -43,29 +53,145 @@
   --graph-filter: none;
 }
 
-body {
-  font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --body-background-color: #0b0b2e;
+    --body-text-color: #e5e7eb;
+    --body-muted-color: #9ca3af;
+    --card-background-color: #14145c;
+    --card-border-color: #2a2a78;
+    --nav-background-color: #0b0b2e;
+    --nav-border-bottom-color: #2a2a78;
+    --nav-current-border-bottom-color: #e0784a;
+    --brand-color: #f3f4f6;
+    --accent-color: #e0784a;
+
+    --up-border-left-color: #22c55e;
+    --down-border-left-color: #ef4444;
+    --down-background-color: #3f1219;
+    --degraded-border-left-color: #f59e0b;
+    --tag-color: #0b0b2e;
+    --tag-up-background-color: #22c55e;
+    --tag-down-background-color: #ef4444;
+    --tag-degraded-background-color: #f59e0b;
+    --change-background-color: #3f2d0a;
+
+    /* Un bouton navy sur fond navy serait invisible : le rust devient
+       l'accent d'action en sombre, le navy reste la couleur de canevas. */
+    --error-button-border-color: #e0784a;
+    --error-button-background-color: #e0784a;
+    --error-button-color: #0b0b2e;
+    --submit-button-border-color: #e0784a;
+    --submit-button-background-color: #e0784a;
+    --submit-button-color: #0b0b2e;
+  }
 }
 
-h1, h2, h3 {
-  color: var(--body-text-color);
+/* ── Typographie ── */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.55;
+}
+
+.container {
+  max-width: 860px;
+}
+
+h1 {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 800;
+  color: var(--brand-color);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--brand-color);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  color: var(--body-muted-color);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  opacity: 1;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+header p.lead {
+  color: var(--body-muted-color);
+  max-width: 46ch;
+}
+
+/* ── Nav ── */
+nav {
+  margin-bottom: 2.5rem;
 }
 
 nav .logo {
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #14145c;
+  color: var(--brand-color);
+  font-size: 1.05rem;
 }
 
 nav .logo img {
   border-radius: 0;
+  height: 2.25rem !important;
 }
 
-/* Le titre d'un module reste lisible mais ne doit plus se comporter comme
+/* ── Cartes (services, incidents, maintenances) ── */
+article {
+  border-radius: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  transition: border-color 0.15s ease;
+}
+
+article.link {
+  cursor: pointer;
+}
+
+article.link:hover {
+  border-color: var(--accent-color);
+}
+
+article + article {
+  margin-top: 0.6rem;
+}
+
+/* Le titre d'un module (page de détail) ne doit plus se comporter comme
    un lien : le script status-website.js (.upptimerc.yml) retire déjà
    `href`, ceci retire la dernière trace visuelle (curseur, focus ring
    hérité d'<a>). */
 main h1 a.no-underline {
   cursor: default;
   outline: none;
+  color: inherit;
+}
+
+/* ── Sélecteur de période (24h/7j/30j/1an/Tout) ── */
+.r label {
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.r input:checked + label {
+  background: var(--card-border-color);
+  color: var(--brand-color);
+}
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--card-border-color);
+  padding-top: 1.5rem;
+  font-size: 0.85rem;
 }
