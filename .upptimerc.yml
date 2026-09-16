@@ -16,6 +16,14 @@ owner: alcinae
 repo: status
 user-agent: alcinae
 
+# Couleurs du graphique Chart.js de la page de détail (Graph.svelte), clés
+# racine (pas sous status-website), défaut sarcelle #89e0cf/#1abc9c sinon.
+# Couleur unique (pas de variante sombre possible, valeur figée au build,
+# pas réactive à prefers-color-scheme) : rust semi-transparent, lisible
+# aussi bien sur une carte claire que sur une carte navy sombre.
+graphBorderColor: "#b84a25"
+graphBackgroundColor: "rgba(184, 74, 37, 0.18)"
+
 # Allowlist stricte des secrets utilisables par les sondes et notifications
 # (recommandation de la doc officielle, section "Secret allowlist") : sans
 # cette liste, Upptime tolère toute variable $NOM présente dans une URL, un
@@ -138,28 +146,41 @@ status-website:
   name: "Alcinae : état des services"
 
   # Thème calé sur le site principal (infra/apps/alcinae/assets/style.css :
-  # --navy #14145C, --rust #B84A25). `theme: light` fournit les variables par
-  # défaut, alcinae-status-theme.css (assets/) les surcharge : mécanisme
-  # officiel vérifié dans upptime/status-page src/routes/_layout.svelte le
-  # 2026-09-16 (status-website.theme charge themes/<nom>.css, status-website
-  # .links ajoute des <link> après, donc nos règles gagnent en cascade).
+  # --navy #14145C, --rust #B84A25), variables et règles dans
+  # alcinae-status-theme.css (assets/) : mécanisme officiel vérifié dans
+  # upptime/status-page src/routes/_layout.svelte le 2026-09-16
+  # (status-website.links ajoute un <link> après les feuilles de thème,
+  # donc nos règles gagnent en cascade). PAS de `theme:` explicite ici :
+  # ça désactiverait le basculement automatique prefers-color-scheme
+  # d'Upptime (constaté en régression le 2026-09-16, corrigé en laissant
+  # Upptime charger light.css/dark.css selon le système, et en fournissant
+  # nous-mêmes une palette claire ET sombre dans alcinae-status-theme.css
+  # via @media (prefers-color-scheme: dark)).
   # URL ABSOLUE obligatoire (pas un chemin relatif) : constaté en échec de
   # Setup CI le 2026-09-16, le crawler d'export statique de Sapper suit tout
   # <link> à chemin relatif comme une page interne à exporter, entre en
   # collision avec la copie du fichier réel (EISDIR) une fois qu'il a créé
   # un dossier du même nom suite au 404 obtenu en local. L'exemple officiel
   # de la doc Upptime utilise déjà une URL absolue, pour cette raison.
-  theme: light
   links:
     - rel: stylesheet
       href: https://status.alcinae.com/alcinae-status-theme.css
 
   # Logo repris tel quel du site principal, pas de duplication d'asset.
+  # Pas de logoHref explicite : Nav.svelte retombe alors sur `config.path`
+  # (la racine de status.alcinae.com elle-même), pour que le logo agisse
+  # comme un lien "accueil" du statut, pas comme une sortie vers
+  # alcinae.com (constaté le 2026-09-16 : le visiteur ne doit pas quitter
+  # la page de statut en cliquant le logo). Le retour vers alcinae.com
+  # reste disponible via le lien texte d'introMessage ci-dessous.
   logoUrl: https://alcinae.com/assets/alcinae.png
-  logoHref: https://alcinae.com
   favicon: https://alcinae.com/assets/alcinae.png
   navbarGitHub: false
 
+  # introTitle ajouté le 2026-09-16 : la page d'accueil n'avait aucun <h1>
+  # visible (seul un <h2> "État en direct" existait), défaut de hiérarchie
+  # de titres constaté en revue UI/UX.
+  introTitle: "État des services Alcinae"
   introMessage: >-
     Suivi en temps réel de la disponibilité des services Alcinae. Retour au
     site principal : [alcinae.com](https://alcinae.com).
