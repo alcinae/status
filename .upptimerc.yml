@@ -43,7 +43,9 @@ secrets:
 workflowSchedule:
   uptime: "*/15 * * * *"
 
-# 9 sondes, MONITORING-EXTERNE.md section 4. Toutes portent le même
+# 14 sondes (9 + 5 ajoutées le 2026-09-16 : Challenge (API), PingScore (API),
+# France Appro (Admin), Forms Admin, Forms Répondant), MONITORING-EXTERNE.md
+# section 4. Toutes portent le même
 # User-Agent explicite pour passer le filtre anti-bot nginx
 # (infra/apps/nginx/sites/00-rate-limit.conf, map $http_user_agent $bad_bot) :
 # ce User-Agent commence par "Mozilla/5.0 (compatible; ...)", il ne
@@ -70,9 +72,31 @@ sites:
       - 200
     __dangerous__body_down_if_text_missing: "Fontbonne"
 
+  # Suffixes (API)/(Admin) uniquement (pas de (UI), inutile : la sonde sans
+  # suffixe couvre déjà la surface principale de chaque service). Ajoutés le
+  # 2026-09-16 après recherche de code (4 agents dédiés) pour chaque backend,
+  # plutôt que deviner une route. `/api/actuator` (et tout `/api/actuator/*`)
+  # renvoie 404 en dur sur les quatre backends (challenge, pingscore, forms,
+  # franceappro), décision de sécurité déjà en place : pas de bilan de santé
+  # générique disponible, chaque route ci-dessous est une route métier
+  # publique vérifiée individuellement.
   - name: Challenge
     slug: challenge
     url: https://challenge.alcinae.com/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+
+  # GET /api/v1/admin/sync/status : permitAll() explicite dans SecurityConfig.java
+  # (dev/challenge/backend), lecture seule, toujours 200 (contrairement à
+  # /api/v1/challenge/active qui 404 dès qu'aucun tournoi n'est ouvert, écartée
+  # pour cette raison). Renvoie date de sync, compteurs d'erreurs, aucune donnée
+  # personnelle. Route documentée comme faisant partie du contrat public stable
+  # dans dev/challenge/CLAUDE.md malgré son préfixe /admin/.
+  - name: Challenge (API)
+    slug: challenge-api
+    url: https://challenge.alcinae.com/api/v1/admin/sync/status
     headers:
       - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
     expectedStatusCodes:
@@ -86,21 +110,22 @@ sites:
     expectedStatusCodes:
       - 200
 
-  # Suffixes (UI)/(API) : seul France Appro a une sonde API distincte
-  # aujourd'hui, donc seul lui a besoin d'être désambiguïsé. Décision du
-  # 2026-09-16, après vérification des vhosts nginx (infra/apps/nginx/
-  # sites/*.conf) : `/api/actuator` (et tout `/api/actuator/*`) renvoie
-  # 404 en dur sur les quatre backends (challenge, pingscore, forms,
-  # franceappro), décision de sécurité déjà en place, pas un oubli. Il
-  # n'existe donc pas de bilan de santé générique à sonder. France Appro
-  # a une sonde API uniquement parce qu'une route métier publique, en
-  # lecture seule et sans authentification a été identifiée (le catalogue
-  # produit, masquée par SECRET_FRANCEAPPRO_API_URL) : rien d'équivalent
-  # n'a été vérifié pour Challenge, PingScore ou Forms, donc pas de sonde
-  # API ajoutée pour eux plutôt que d'en deviner une. Challenge et
-  # PingScore n'ont donc pas de suffixe : une seule sonde chacun, pas
-  # d'ambiguïté à lever.
-  - name: France Appro (UI)
+  # GET /api/actuator/info : permitAll() explicite (SecurityConfig.java,
+  # dev/pingscore/backend), 200, {"app":{"version":"..."}}. À surveiller :
+  # documentée comme "exception temporaire, à retirer" à 3 endroits cohérents
+  # (nginx, LegacyActuatorInfoController, CLAUDE.md du module) — dette assumée,
+  # pas un accident, mais cette sonde cesserait de fonctionner si l'équipe la
+  # retire un jour sans qu'on pense à mettre à jour cette config en même temps.
+  - name: PingScore (API)
+    slug: pingscore-api
+    url: https://pingscore.alcinae.com/api/actuator/info
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+    __dangerous__body_down_if_text_missing: "version"
+
+  - name: France Appro
     slug: boutique-en-ligne
     url: https://franceappro.alcinae.com/
     headers:
@@ -120,6 +145,19 @@ sites:
     expectedStatusCodes:
       - 200
 
+  # GET /admin/ : dev/franceappro/admin/ est un SPA Next.js sans middleware,
+  # l'auth Keycloak (react-oidc-context, RequireAuth.tsx) ne redirige que côté
+  # client après hydratation (jamais un 302/307 serveur) : un GET anonyme
+  # renvoie toujours 200, sonde fiable vérifiée par recherche de code le
+  # 2026-09-16. franceappro-admin n'était surveillé nulle part avant ça.
+  - name: France Appro (Admin)
+    slug: franceappro-admin
+    url: https://franceappro.alcinae.com/admin/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+
   - name: Forms
     slug: forms
     url: https://forms.alcinae.com/
@@ -128,6 +166,33 @@ sites:
     expectedStatusCodes:
       - 200
     __dangerous__body_down_if_text_missing: "Alcinae Forms"
+
+  # GET /admin/ et /f/ : dev/forms/admin/ et dev/forms/respondent/ sont des SPA
+  # React statiques (nginx-unprivileged, try_files vers index.html, zéro Node en
+  # prod) : un GET anonyme renvoie toujours 200 dans les deux cas (redirection
+  # Keycloak JS différée pour /admin/, /f/ volontairement public sans
+  # authentification pour FR29). La sonde "Forms" ci-dessus ne testait que la
+  # page d'atterrissage statique (/var/www/forms/landing/), ni l'un ni l'autre
+  # des deux vraies applications : trou de supervision comblé le 2026-09-16.
+  # Pas de sonde forms-api pour l'instant : sa seule route publique
+  # (GET /api/forms/{uuid}) exige un formulaire actif existant, ce qui
+  # nécessiterait de provisionner un formulaire témoin dédié en production
+  # (décision produit/infra distincte, mise de côté pour l'instant).
+  - name: Forms Admin
+    slug: forms-admin
+    url: https://forms.alcinae.com/admin/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+
+  - name: Forms Répondant
+    slug: forms-respondent
+    url: https://forms.alcinae.com/f/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
 
   - name: Authentification
     slug: authentification
