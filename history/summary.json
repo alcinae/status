@@ -94,19 +94,19 @@
     "url": "$SECRET_FRANCEAPPRO_API_URL",
     "icon": "https://icons.duckduckgo.com/ip3/null.ico",
     "slug": "boutique-en-ligne-api",
-    "status": "down",
-    "uptime": "27.60%",
-    "uptimeDay": "27.60%",
-    "uptimeWeek": "27.60%",
-    "uptimeMonth": "27.60%",
-    "uptimeYear": "27.60%",
-    "time": 0,
-    "timeDay": 0,
-    "timeWeek": 0,
-    "timeMonth": 0,
-    "timeYear": 0,
+    "status": "up",
+    "uptime": "11.78%",
+    "uptimeDay": "11.78%",
+    "uptimeWeek": "11.78%",
+    "uptimeMonth": "11.78%",
+    "uptimeYear": "11.78%",
+    "time": 664,
+    "timeDay": 664,
+    "timeWeek": 664,
+    "timeMonth": 664,
+    "timeYear": 664,
     "dailyMinutesDown": {
-      "2026-09-16": 1
+      "2026-09-16": 3
     }
   },
   {
@@ -150,19 +150,19 @@
     "url": "$SECRET_MEDIA_URL",
     "icon": "https://icons.duckduckgo.com/ip3/null.ico",
     "slug": "medias",
-    "status": "down",
-    "uptime": "43.84%",
-    "uptimeDay": "43.84%",
-    "uptimeWeek": "43.84%",
-    "uptimeMonth": "43.84%",
-    "uptimeYear": "43.84%",
-    "time": 0,
-    "timeDay": 0,
-    "timeWeek": 0,
-    "timeMonth": 0,
-    "timeYear": 0,
+    "status": "up",
+    "uptime": "10.46%",
+    "uptimeDay": "10.46%",
+    "uptimeWeek": "10.46%",
+    "uptimeMonth": "10.46%",
+    "uptimeYear": "10.46%",
+    "time": 1317,
+    "timeDay": 1317,
+    "timeWeek": 1317,
+    "timeMonth": 1317,
+    "timeYear": 1317,
     "dailyMinutesDown": {
-      "2026-09-16": 0
+      "2026-09-16": 3
     }
   }
 ]
