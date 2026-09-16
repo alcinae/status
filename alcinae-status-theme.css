@@ -1,0 +1,71 @@
+/*
+ * Thème de status.alcinae.com, calé sur infra/apps/alcinae/assets/style.css
+ * (--navy #14145C, --rust #B84A25). Chargé après themes/light.css (voir
+ * status-website.theme et status-website.links dans .upptimerc.yml) : les
+ * variables ci-dessous surchargent celles du thème par défaut d'Upptime,
+ * même quand ce dernier utilise !important sur une déclaration qui LIT la
+ * variable (ex. .tag.up { background: var(--tag-up-background-color)
+ * !important }) puisque c'est la valeur de la variable qui change, pas la
+ * règle. Liste exhaustive des variables : upptime/status-page
+ * static/themes/light.css, lue le 2026-09-16.
+ */
+
+:root {
+  --body-background-color: #ffffff;
+  --body-text-color: #1f2937;
+  --card-background-color: #f8f9fa;
+  --card-border-color: #e5e7eb;
+  --nav-background-color: #ffffff;
+  --nav-border-bottom-color: #e5e7eb;
+  --nav-current-border-bottom-color: #b84a25;
+
+  /* États des sondes : couleurs sémantiques classiques, volontairement
+     distinctes du rust de la marque pour ne jamais laisser croire qu'un
+     accent de navigation est un état "dégradé". */
+  --up-border-left-color: #16a34a;
+  --down-border-left-color: #dc2626;
+  --down-background-color: #fee2e2;
+  --degraded-border-left-color: #d97706;
+  --tag-color: #ffffff;
+  --tag-up-background-color: #16a34a;
+  --tag-down-background-color: #dc2626;
+  --tag-degraded-background-color: #d97706;
+  --change-background-color: #fef3c7;
+
+  --error-button-border-color: #14145c;
+  --error-button-background-color: #14145c;
+  --error-button-color: #ffffff;
+  --submit-button-border-color: #14145c;
+  --submit-button-background-color: #14145c;
+  --submit-button-color: #ffffff;
+
+  --graph-opacity: 1;
+  --graph-filter: none;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+h1, h2, h3 {
+  color: var(--body-text-color);
+}
+
+nav .logo {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #14145c;
+}
+
+nav .logo img {
+  border-radius: 0;
+}
+
+/* Le titre d'un module reste lisible mais ne doit plus se comporter comme
+   un lien : le script status-website.js (.upptimerc.yml) retire déjà
+   `href`, ceci retire la dernière trace visuelle (curseur, focus ring
+   hérité d'<a>). */
+main h1 a.no-underline {
+  cursor: default;
+  outline: none;
+}
