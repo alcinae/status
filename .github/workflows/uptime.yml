@@ -55,3 +55,4 @@ jobs:
           GH_PAT: ${{ steps.app_token.outputs.token || secrets.GH_PAT || github.token }}
           # Configure the secret allowlist in .upptimerc.yml; do not edit this workflow directly.
           SECRETS_CONTEXT: '{"SECRET_FRANCEAPPRO_API_URL":${{ toJson(secrets.SECRET_FRANCEAPPRO_API_URL) }},"SECRET_MEDIA_URL":${{ toJson(secrets.SECRET_MEDIA_URL) }}}'
+
