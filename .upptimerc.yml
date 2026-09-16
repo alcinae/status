@@ -25,13 +25,13 @@ secrets:
   - SECRET_FRANCEAPPRO_API_URL
   - SECRET_MEDIA_URL
 
-# Fréquence des sondes : 5 minutes, le minimum que GitHub Actions autorise
-# pour un déclenchement planifié (décision retenue dans SPEC.md). C'est déjà
-# la valeur par défaut d'Upptime (workflowSchedule.uptime: "*/5 * * * *"),
-# reprise ici explicitement pour que l'intention reste lisible dans ce
-# fichier même si le défaut amont venait à changer.
+# Fréquence des sondes : 15 minutes (décision retenue dans SPEC.md, révisée
+# le 2026-09-16). Le minimum autorisé par GitHub Actions est 5 minutes
+# (valeur par défaut d'Upptime), mais un délai de détection plus long a été
+# jugé acceptable au vu du SLA (annexe 1 section 4, non indexé sur cette
+# fréquence, voir MONITORING-EXTERNE.md section 11).
 workflowSchedule:
-  uptime: "*/5 * * * *"
+  uptime: "*/15 * * * *"
 
 # 9 sondes, MONITORING-EXTERNE.md section 4. Toutes portent le même
 # User-Agent explicite pour passer le filtre anti-bot nginx
