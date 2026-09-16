@@ -95,19 +95,17 @@
     "icon": "https://icons.duckduckgo.com/ip3/null.ico",
     "slug": "boutique-en-ligne-api",
     "status": "up",
-    "uptime": "11.78%",
-    "uptimeDay": "11.78%",
-    "uptimeWeek": "11.78%",
-    "uptimeMonth": "11.78%",
-    "uptimeYear": "11.78%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 664,
     "timeDay": 664,
     "timeWeek": 664,
     "timeMonth": 664,
     "timeYear": 664,
-    "dailyMinutesDown": {
-      "2026-09-16": 3
-    }
+    "dailyMinutesDown": {}
   },
   {
     "name": "Forms",
@@ -151,18 +149,16 @@
     "icon": "https://icons.duckduckgo.com/ip3/null.ico",
     "slug": "medias",
     "status": "up",
-    "uptime": "10.46%",
-    "uptimeDay": "10.46%",
-    "uptimeWeek": "10.46%",
-    "uptimeMonth": "10.46%",
-    "uptimeYear": "10.46%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 1317,
     "timeDay": 1317,
     "timeWeek": 1317,
     "timeMonth": 1317,
     "timeYear": 1317,
-    "dailyMinutesDown": {
-      "2026-09-16": 3
-    }
+    "dailyMinutesDown": {}
   }
 ]
