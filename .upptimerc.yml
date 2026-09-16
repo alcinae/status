@@ -43,8 +43,10 @@ secrets:
 workflowSchedule:
   uptime: "*/15 * * * *"
 
-# 14 sondes (9 + 5 ajoutées le 2026-09-16 : Challenge (API), PingScore (API),
-# France Appro (Admin), Forms Admin, Forms Répondant), MONITORING-EXTERNE.md
+# 13 sondes (9 + 5 ajoutées puis 1 retirée le 2026-09-16 : Challenge (API),
+# PingScore (API), France Appro (Admin), Forms (Admin) ajoutées ; l'ancienne
+# sonde "Forms" (page d'atterrissage statique) retirée, remplacée par "Forms"
+# = /f/ (répondant, la vraie surface principale)), MONITORING-EXTERNE.md
 # section 4. Toutes portent le même
 # User-Agent explicite pour passer le filtre anti-bot nginx
 # (infra/apps/nginx/sites/00-rate-limit.conf, map $http_user_agent $bad_bot) :
@@ -158,37 +160,33 @@ sites:
     expectedStatusCodes:
       - 200
 
-  - name: Forms
-    slug: forms
-    url: https://forms.alcinae.com/
-    headers:
-      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
-    expectedStatusCodes:
-      - 200
-    __dangerous__body_down_if_text_missing: "Alcinae Forms"
-
   # GET /admin/ et /f/ : dev/forms/admin/ et dev/forms/respondent/ sont des SPA
   # React statiques (nginx-unprivileged, try_files vers index.html, zéro Node en
   # prod) : un GET anonyme renvoie toujours 200 dans les deux cas (redirection
   # Keycloak JS différée pour /admin/, /f/ volontairement public sans
-  # authentification pour FR29). La sonde "Forms" ci-dessus ne testait que la
-  # page d'atterrissage statique (/var/www/forms/landing/), ni l'un ni l'autre
-  # des deux vraies applications : trou de supervision comblé le 2026-09-16.
-  # Pas de sonde forms-api pour l'instant : sa seule route publique
-  # (GET /api/forms/{uuid}) exige un formulaire actif existant, ce qui
-  # nécessiterait de provisionner un formulaire témoin dédié en production
-  # (décision produit/infra distincte, mise de côté pour l'instant).
-  - name: Forms Admin
-    slug: forms-admin
-    url: https://forms.alcinae.com/admin/
+  # authentification pour FR29). L'ancienne sonde "Forms" (racine
+  # https://forms.alcinae.com/) ne testait qu'une page d'atterrissage statique
+  # (/var/www/forms/landing/), ni l'une ni l'autre des deux vraies applications,
+  # et n'apportait quasi rien qu'un vrai visiteur (qui n'atterrit presque jamais
+  # sur `/`, mais reçoit un lien direct vers /f/<uuid>) ne recouvre déjà :
+  # retirée le 2026-09-16, remplacée par les deux sondes réelles ci-dessous.
+  # "Forms" (répondant) est la surface principale, sans suffixe, comme les
+  # autres services ; "Forms (Admin)" la désambiguïse. Pas de sonde forms-api
+  # pour l'instant : sa seule route publique (GET /api/forms/{uuid}) exige un
+  # formulaire actif existant, ce qui nécessiterait de provisionner un
+  # formulaire témoin dédié en production (décision produit/infra distincte,
+  # mise de côté pour l'instant).
+  - name: Forms
+    slug: forms-respondent
+    url: https://forms.alcinae.com/f/
     headers:
       - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
     expectedStatusCodes:
       - 200
 
-  - name: Forms Répondant
-    slug: forms-respondent
-    url: https://forms.alcinae.com/f/
+  - name: Forms (Admin)
+    slug: forms-admin
+    url: https://forms.alcinae.com/admin/
     headers:
       - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
     expectedStatusCodes:
