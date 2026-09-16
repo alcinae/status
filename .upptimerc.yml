@@ -143,10 +143,16 @@ status-website:
   # officiel vérifié dans upptime/status-page src/routes/_layout.svelte le
   # 2026-09-16 (status-website.theme charge themes/<nom>.css, status-website
   # .links ajoute des <link> après, donc nos règles gagnent en cascade).
+  # URL ABSOLUE obligatoire (pas un chemin relatif) : constaté en échec de
+  # Setup CI le 2026-09-16, le crawler d'export statique de Sapper suit tout
+  # <link> à chemin relatif comme une page interne à exporter, entre en
+  # collision avec la copie du fichier réel (EISDIR) une fois qu'il a créé
+  # un dossier du même nom suite au 404 obtenu en local. L'exemple officiel
+  # de la doc Upptime utilise déjà une URL absolue, pour cette raison.
   theme: light
   links:
     - rel: stylesheet
-      href: /alcinae-status-theme.css
+      href: https://status.alcinae.com/alcinae-status-theme.css
 
   # Logo repris tel quel du site principal, pas de duplication d'asset.
   logoUrl: https://alcinae.com/assets/alcinae.png
