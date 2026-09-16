@@ -1,31 +1,210 @@
-# Change these first
-owner: upptime # Your GitHub organization or username, where this repository lives
-repo: upptime # The name of this repository
+# Configuration Upptime pour la page de statut publique status.alcinae.com.
+#
+# Source de vérité : ce fichier vit dans le dépôt privé alcinae/alcinae
+# (infra/platform/status-page/.upptimerc.yml). Une copie identique est
+# recopiée vers le dépôt public alcinae/status après relecture (voir le
+# README.md de ce dossier pour la procédure de copie). Ne jamais modifier
+# la copie du dépôt public directement.
+#
+# Clés vérifiées sur la documentation officielle Upptime le 2026-09-16
+# (https://upptime.js.org/docs/configuration, code source
+# https://github.com/upptime/upptime.js.org/blob/master/docs/configuration.md
+# et https://github.com/upptime/status-page/blob/master/i18n.yml), jamais
+# devinées.
 
+owner: alcinae
+repo: status
+user-agent: alcinae
+
+# Allowlist stricte des secrets utilisables par les sondes et notifications
+# (recommandation de la doc officielle, section "Secret allowlist") : sans
+# cette liste, Upptime tolère toute variable $NOM présente dans une URL, un
+# en-tête ou un corps de requête. GH_PAT n'y figure jamais : les workflows
+# générés le reçoivent séparément.
+secrets:
+  - SECRET_FRANCEAPPRO_API_URL
+  - SECRET_MEDIA_URL
+
+# Fréquence des sondes : 5 minutes, le minimum que GitHub Actions autorise
+# pour un déclenchement planifié (décision retenue dans SPEC.md). C'est déjà
+# la valeur par défaut d'Upptime (workflowSchedule.uptime: "*/5 * * * *"),
+# reprise ici explicitement pour que l'intention reste lisible dans ce
+# fichier même si le défaut amont venait à changer.
+workflowSchedule:
+  uptime: "*/5 * * * *"
+
+# 9 sondes, MONITORING-EXTERNE.md section 4. Toutes portent le même
+# User-Agent explicite pour passer le filtre anti-bot nginx
+# (infra/apps/nginx/sites/00-rate-limit.conf, map $http_user_agent $bad_bot) :
+# ce User-Agent commence par "Mozilla/5.0 (compatible; ...)", il ne
+# correspond à aucun des motifs bloqués (python-httpx, python-requests,
+# curl/, wget/, masscan, zgrab, nuclei, sqlmap, nikto, dirbuster, gobuster,
+# wfuzz, nmap, scrapy, libwww-perl, go-http-client) et n'est jamais une
+# chaîne vide. Vérifié par lecture du fichier, aucun doute à signaler.
 sites:
-  - name: Google
-    url: https://www.google.com
-  - name: Wikipedia
-    url: https://en.wikipedia.org
-  - name: Hacker News
-    url: https://news.ycombinator.com
-  - name: Secret Site
-    url: $SECRET_SITE
+  - name: Site Alcinae
+    slug: site-alcinae
+    url: https://alcinae.com/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+    __dangerous__body_down_if_text_missing: "Alcinae"
+
+  - name: Site La Ferme de Fontbonne
+    slug: site-la-ferme-de-fontbonne
+    url: https://fermedefontbonne.fr/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+    __dangerous__body_down_if_text_missing: "Fontbonne"
+
+  - name: Challenge
+    slug: challenge
+    url: https://challenge.alcinae.com/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+
+  - name: PingScore
+    slug: pingscore
+    url: https://pingscore.alcinae.com/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+
+  - name: Boutique en ligne
+    slug: boutique-en-ligne
+    url: https://franceappro.alcinae.com/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+    __dangerous__body_down_if_text_missing: "France Appro"
+
+  # URL masquée par secret : voir le compte rendu de l'agent pour la valeur
+  # exacte proposée (route publique de lecture du catalogue franceappro,
+  # sans authentification, sans effet de bord). Jamais écrite en clair ici.
+  - name: Boutique en ligne (API)
+    slug: boutique-en-ligne-api
+    url: $SECRET_FRANCEAPPRO_API_URL
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+
+  - name: Forms
+    slug: forms
+    url: https://forms.alcinae.com/
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+    __dangerous__body_down_if_text_missing: "Alcinae Forms"
+
+  - name: Authentification
+    slug: authentification
+    url: https://auth.alcinae.com/realms/alcinae/.well-known/openid-configuration
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+    __dangerous__body_down_if_text_missing: "issuer"
+
+  # URL masquée par secret : objet public de référence sous
+  # media.alcinae.com. Voir le compte rendu de l'agent, aucune valeur stable
+  # n'a pu être identifiée par analyse statique du dépôt (le contenu du
+  # bucket est une donnée de production dynamique, pas un fichier versionné).
+  - name: Médias
+    slug: medias
+    url: $SECRET_MEDIA_URL
+    headers:
+      - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
+    expectedStatusCodes:
+      - 200
+
+# Utilisateurs GitHub assignés à chaque issue d'incident (décision de
+# l'utilisateur, laissée en commentaire à compléter).
+# assignees:
+#   - <identifiant-github-a-completer>
 
 status-website:
-  # Add your custom domain name, or remove the `cname` line if you don't have a domain
-  # Uncomment the `baseUrl` line if you don't have a custom domain and add your repo name there
-  cname: demo.upptime.js.org
-  # baseUrl: /your-repo-name
-  logoUrl: https://raw.githubusercontent.com/upptime/upptime.js.org/master/static/img/icon.svg
-  name: Upptime
-  introTitle: "**Upptime** is the open-source uptime monitor and status page, powered entirely by GitHub."
-  introMessage: This is a sample status page which uses **real-time** data from our [GitHub repository](https://github.com/upptime/upptime). No server required — just GitHub Actions, Issues, and Pages. [**Get your own for free**](https://github.com/upptime/upptime)
+  cname: status.alcinae.com
+  name: "Alcinae : état des services"
   navbar:
-    - title: Status
-      href: /
-    - title: GitHub
-      href: https://github.com/$OWNER/$REPO
+    - title: Alcinae
+      href: https://alcinae.com
+  introMessage: >-
+    Suivi en temps réel de la disponibilité des services Alcinae. Retour au
+    site principal : [alcinae.com](https://alcinae.com).
 
-# Upptime also supports notifications, assigning issues, and more
-# See https://upptime.js.org/docs/configuration
+# Traduction française complète de l'interface Upptime (README et page de
+# statut). Liste exhaustive des 57 clés documentées dans
+# https://github.com/upptime/status-page/blob/master/i18n.yml (lue le
+# 2026-09-16, valeurs anglaises par défaut vérifiées une à une avant
+# traduction, aucune clé omise).
+i18n:
+  activeIncidents: "Incidents en cours"
+  allSystemsOperational: "Tous les systèmes sont opérationnels"
+  incidentReport: "Rapport de l'incident n° $NUMBER →"
+  activeIncidentSummary: "Ouvert le $DATE, $POSTS message(s)"
+  incidentTitle: "Détails de l'incident $NUMBER"
+  incidentDetails: "Détails de l'incident"
+  incidentFixed: "Résolu"
+  incidentOngoing: "En cours"
+  incidentOpenedAt: "Ouvert le"
+  incidentClosedAt: "Fermé le"
+  incidentViewOnGitHub: "Voir et s'abonner sur GitHub"
+  incidentCommentSummary: "Publié le $DATE par $AUTHOR"
+  incidentBack: "← Retour à tous les incidents"
+  pastIncidents: "Incidents passés"
+  pastIncidentsResolved: "Résolu en $MINUTES minutes, $POSTS message(s)"
+  liveStatus: "État en direct"
+  overallUptime: "Disponibilité globale : $UPTIME"
+  overallUptimeTitle: "Disponibilité globale"
+  averageResponseTime: "Temps de réponse moyen : $TIMEms"
+  averageResponseTimeTitle: "Réponse moyenne"
+  sevelDayResponseTime: "Temps de réponse sur 7 jours"
+  responseTimeMs: "Temps de réponse (ms)"
+  up: "En ligne"
+  down: "Hors ligne"
+  degraded: "Dégradé"
+  ms: "ms"
+  loading: "Chargement"
+  navGitHub: "GitHub"
+  footer: "Cette page est [open source]($REPO), propulsée par [Upptime](https://upptime.js.org)"
+  rateLimitExceededTitle: "Limite de requêtes dépassée"
+  rateLimitExceededIntro: "Vous avez dépassé le nombre de requêtes autorisées en une heure, vous devez donc patienter avant d'accéder à nouveau à ce site. Vous pouvez aussi ajouter un jeton d'accès personnel GitHub pour continuer à utiliser ce site."
+  rateLimitExceededWhatDoesErrorMean: "Que signifie cette erreur ?"
+  rateLimitExceededErrorMeaning: "Ce site utilise l'API GitHub pour accéder aux données en temps réel sur l'état de nos services. Par défaut, GitHub autorise 60 requêtes par heure et par adresse IP, une limite que vous avez atteinte."
+  rateLimitExceededErrorHowCanFix: "Comment puis-je résoudre ce problème ?"
+  rateLimitExceededErrorFix: "Vous pouvez attendre une heure, la limite de votre adresse IP sera alors réinitialisée. Vous pouvez aussi ajouter votre jeton d'accès personnel GitHub, qui porte la limite à 5 000 requêtes par heure."
+  rateLimitExceededGeneratePAT: "Apprendre à générer un jeton d'accès personnel"
+  rateLimitExceededHasSet: "Un jeton d'accès personnel est déjà renseigné."
+  rateLimitExceededRemoveToken: "Retirer le jeton"
+  rateLimitExceededGitHubPAT: "Jeton d'accès personnel GitHub"
+  rateLimitExceededCopyPastePAT: "Collez votre jeton"
+  rateLimitExceededSaveToken: "Enregistrer le jeton"
+  errorTitle: "Une erreur est survenue"
+  errorIntro: "Une erreur est survenue lors de la récupération des derniers détails d'état."
+  errorText: "Vous pouvez réessayer dans quelques instants."
+  errorHome: "Retourner à l'accueil"
+  pastScheduledMaintenance: "Maintenances planifiées passées"
+  scheduledMaintenance: "Maintenance planifiée"
+  scheduledMaintenanceSummaryStarted: "Débutée le $DATE, pour $DURATION minutes"
+  scheduledMaintenanceSummaryStarts: "Débute le $DATE, pour $DURATION minutes"
+  startedAt: "Débutée le"
+  startsAt: "Débute le"
+  duration: "Durée"
+  durationMin: "$DURATION minutes"
+  incidentCompleted: "Terminée"
+  incidentScheduled: "Planifiée"
+  duration24H: "24 h"
+  duration7D: "7 j"
+  duration30D: "30 j"
+  duration1Y: "1 an"
+  durationAll: "Tout"
+  locale: "fr-FR"

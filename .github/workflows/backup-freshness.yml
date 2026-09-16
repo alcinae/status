@@ -1,0 +1,43 @@
+# Contrôle horaire de fraîcheur des sauvegardes (T5, SPEC-status-page-maison).
+#
+# Lit https://alcinae.com/.well-known/alcinae-status/backups.json (fichier
+# public écrit par le VPS après chaque sauvegarde réussie, modèle "pull",
+# aucun secret côté VPS), calcule l'âge des deux horodatages qu'il contient
+# et ouvre, commente ou ferme une issue GitHub unique selon le résultat.
+#
+# Source de vérité de ce fichier : dépôt privé alcinae/alcinae
+# (infra/platform/status-page/.github/workflows/backup-freshness.yml), copié
+# tel quel vers le dépôt public alcinae/status (voir README.md du dossier).
+#
+# Minute non ronde (17) pour éviter la période de forte charge du début
+# d'heure documentée par GitHub (docs/deployment/MONITORING-EXTERNE.md,
+# section "limites honnêtes").
+name: Fraîcheur des sauvegardes
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check-backup-freshness:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Vérifier la fraîcheur des sauvegardes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          BACKUPS_STATUS_URL: "https://alcinae.com/.well-known/alcinae-status/backups.json"
+        run: node infra/platform/status-page/scripts/check-backup-freshness.mjs
