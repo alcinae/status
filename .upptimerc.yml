@@ -112,15 +112,15 @@ sites:
     expectedStatusCodes:
       - 200
 
-  # GET /api/actuator/info : permitAll() explicite (SecurityConfig.java,
-  # dev/pingscore/backend), 200, {"app":{"version":"..."}}. À surveiller :
-  # documentée comme "exception temporaire, à retirer" à 3 endroits cohérents
-  # (nginx, LegacyActuatorInfoController, CLAUDE.md du module) — dette assumée,
-  # pas un accident, mais cette sonde cesserait de fonctionner si l'équipe la
-  # retire un jour sans qu'on pense à mettre à jour cette config en même temps.
+  # GET /api/version : permitAll() explicite (SecurityConfig.java,
+  # dev/pingscore/backend), 200, {"version":"..."}. Anciennement /api/actuator/info
+  # (VersionController, ex-LegacyActuatorInfoController) : cette route a été
+  # retirée du vhost nginx (INF-NGX-009, audit du 2026-09-17, elle ne
+  # proxifiait plus rien depuis la séparation du port de management), mise à
+  # jour de cette sonde dans le même mouvement.
   - name: PingScore (API)
     slug: pingscore-api
-    url: https://pingscore.alcinae.com/api/actuator/info
+    url: https://pingscore.alcinae.com/api/version
     headers:
       - "User-Agent: Mozilla/5.0 (compatible; AlcinaeStatusBot/1.0; +https://status.alcinae.com/)"
     expectedStatusCodes:
