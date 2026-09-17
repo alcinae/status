@@ -59,11 +59,11 @@
     "icon": "https://icons.duckduckgo.com/ip3/challenge.alcinae.com.ico",
     "slug": "challenge-api",
     "status": "down",
-    "uptime": "99.94%",
-    "uptimeDay": "99.94%",
-    "uptimeWeek": "99.94%",
-    "uptimeMonth": "99.94%",
-    "uptimeYear": "99.94%",
+    "uptime": "99.92%",
+    "uptimeDay": "99.92%",
+    "uptimeWeek": "99.92%",
+    "uptimeMonth": "99.92%",
+    "uptimeYear": "99.92%",
     "time": 619,
     "timeDay": 619,
     "timeWeek": 619,
@@ -97,18 +97,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/pingscore.alcinae.com.ico",
     "slug": "pingscore-api",
     "status": "down",
-    "uptime": "99.97%",
-    "uptimeDay": "99.97%",
-    "uptimeWeek": "99.97%",
-    "uptimeMonth": "99.97%",
-    "uptimeYear": "99.97%",
+    "uptime": "99.94%",
+    "uptimeDay": "99.94%",
+    "uptimeWeek": "99.94%",
+    "uptimeMonth": "99.94%",
+    "uptimeYear": "99.94%",
     "time": 866,
     "timeDay": 866,
     "timeWeek": 866,
     "timeMonth": 866,
     "timeYear": 866,
     "dailyMinutesDown": {
-      "2026-09-17": 0
+      "2026-09-17": 1
     }
   },
   {
@@ -135,18 +135,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/null.ico",
     "slug": "boutique-en-ligne-api",
     "status": "down",
-    "uptime": "99.99%",
-    "uptimeDay": "99.99%",
-    "uptimeWeek": "99.99%",
-    "uptimeMonth": "99.99%",
-    "uptimeYear": "99.99%",
+    "uptime": "99.97%",
+    "uptimeDay": "99.96%",
+    "uptimeWeek": "99.97%",
+    "uptimeMonth": "99.97%",
+    "uptimeYear": "99.97%",
     "time": 535,
     "timeDay": 525,
     "timeWeek": 535,
     "timeMonth": 535,
     "timeYear": 535,
     "dailyMinutesDown": {
-      "2026-09-17": 0
+      "2026-09-17": 1
     }
   },
   {
