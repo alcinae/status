@@ -40,4 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           BACKUPS_STATUS_URL: "https://alcinae.com/.well-known/alcinae-status/backups.json"
-        run: node infra/platform/status-page/scripts/check-backup-freshness.mjs
+        # Chemin relatif au dossier copie, jamais celui de ce depot : le dossier
+        # platform/status-page/ devient la racine du depot public alcinae/status
+        # (voir son README.md), ou ce prefixe n'existe pas.
+        run: node scripts/check-backup-freshness.mjs
