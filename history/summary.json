@@ -96,20 +96,20 @@
     "url": "https://pingscore.alcinae.com/api/version",
     "icon": "https://icons.duckduckgo.com/ip3/pingscore.alcinae.com.ico",
     "slug": "pingscore-api",
-    "status": "down",
-    "uptime": "98.20%",
-    "uptimeDay": "99.99%",
-    "uptimeWeek": "98.20%",
-    "uptimeMonth": "98.20%",
-    "uptimeYear": "98.20%",
-    "time": 614,
-    "timeDay": 441,
-    "timeWeek": 614,
-    "timeMonth": 614,
-    "timeYear": 614,
+    "status": "up",
+    "uptime": "98.09%",
+    "uptimeDay": "99.36%",
+    "uptimeWeek": "98.09%",
+    "uptimeMonth": "98.09%",
+    "uptimeYear": "98.09%",
+    "time": 608,
+    "timeDay": 428,
+    "timeWeek": 608,
+    "timeMonth": 608,
+    "timeYear": 608,
     "dailyMinutesDown": {
       "2026-09-17": 148,
-      "2026-09-22": 0
+      "2026-09-22": 9
     }
   },
   {
