@@ -106,11 +106,11 @@
     "icon": "https://icons.duckduckgo.com/ip3/pingscore.alcinae.com.ico",
     "slug": "pingscore-api",
     "status": "up",
-    "uptime": "99.09%",
+    "uptime": "99.10%",
     "uptimeDay": "98.81%",
     "uptimeWeek": "99.83%",
-    "uptimeMonth": "99.09%",
-    "uptimeYear": "99.09%",
+    "uptimeMonth": "99.10%",
+    "uptimeYear": "99.10%",
     "time": 573,
     "timeDay": 518,
     "timeWeek": 540,
@@ -127,19 +127,17 @@
     "icon": "https://icons.duckduckgo.com/ip3/franceappro.alcinae.com.ico",
     "slug": "boutique-en-ligne",
     "status": "up",
-    "uptime": "99.93%",
-    "uptimeDay": "99.15%",
-    "uptimeWeek": "99.88%",
-    "uptimeMonth": "99.93%",
-    "uptimeYear": "99.93%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 1294,
     "timeDay": 1313,
     "timeWeek": 1269,
     "timeMonth": 1294,
     "timeYear": 1294,
-    "dailyMinutesDown": {
-      "2026-09-29": 12
-    }
+    "dailyMinutesDown": {}
   },
   {
     "name": "France Appro (API)",
@@ -147,19 +145,18 @@
     "icon": "https://icons.duckduckgo.com/ip3/null.ico",
     "slug": "boutique-en-ligne-api",
     "status": "up",
-    "uptime": "99.72%",
-    "uptimeDay": "99.48%",
-    "uptimeWeek": "99.93%",
-    "uptimeMonth": "99.72%",
-    "uptimeYear": "99.72%",
+    "uptime": "99.76%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "99.76%",
+    "uptimeYear": "99.76%",
     "time": 550,
     "timeDay": 493,
     "timeWeek": 560,
     "timeMonth": 550,
     "timeYear": 550,
     "dailyMinutesDown": {
-      "2026-09-17": 45,
-      "2026-09-29": 7
+      "2026-09-17": 45
     }
   },
   {
@@ -168,19 +165,17 @@
     "icon": "https://icons.duckduckgo.com/ip3/franceappro.alcinae.com.ico",
     "slug": "franceappro-admin",
     "status": "up",
-    "uptime": "99.99%",
-    "uptimeDay": "99.82%",
-    "uptimeWeek": "99.97%",
-    "uptimeMonth": "99.99%",
-    "uptimeYear": "99.99%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 630,
     "timeDay": 663,
     "timeWeek": 637,
     "timeMonth": 630,
     "timeYear": 630,
-    "dailyMinutesDown": {
-      "2026-09-29": 3
-    }
+    "dailyMinutesDown": {}
   },
   {
     "name": "Forms",
@@ -224,19 +219,17 @@
     "icon": "https://icons.duckduckgo.com/ip3/auth.alcinae.com.ico",
     "slug": "authentification",
     "status": "up",
-    "uptime": "99.99%",
-    "uptimeDay": "99.83%",
-    "uptimeWeek": "99.98%",
-    "uptimeMonth": "99.99%",
-    "uptimeYear": "99.99%",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
     "time": 837,
     "timeDay": 948,
     "timeWeek": 837,
     "timeMonth": 837,
     "timeYear": 837,
-    "dailyMinutesDown": {
-      "2026-09-29": 2
-    }
+    "dailyMinutesDown": {}
   },
   {
     "name": "CDN",
