@@ -1,7 +1,7 @@
 url: https://pingscore.alcinae.com/api/version
-status: down
-code: 502
-responseTime: 440
-lastUpdated: 2026-10-01T08:01:38.322Z
+status: up
+code: 200
+responseTime: 605
+lastUpdated: 2026-10-01T09:31:05.497Z
 startTime: 2026-09-16T21:15:02.281Z
 generator: Upptime <https://github.com/upptime/upptime>
