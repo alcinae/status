@@ -1,7 +1,7 @@
 url: https://auth.alcinae.com/realms/alcinae/.well-known/openid-configuration
 status: up
 code: 200
-responseTime: 723
-lastUpdated: 2026-10-01T13:05:51.525Z
+responseTime: 469
+lastUpdated: 2026-10-01T16:05:47.316Z
 startTime: 2026-09-16T11:26:45.360Z
 generator: Upptime <https://github.com/upptime/upptime>
